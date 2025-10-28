@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
     - name: Check out
@@ -24,6 +24,12 @@ jobs:
         distribution: 'temurin'
         java-version: 21
 
+    - name: Build WebUI
+      run: |
+        cd webui
+        npm ci
+        npm run build
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
@@ -36,7 +42,7 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Upload CI module zip as artifact zip
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: PlayIntegrityFix_${{ env.VERSION }}-inject-s_${{ github.run_number }}
         path: 'module/*'
