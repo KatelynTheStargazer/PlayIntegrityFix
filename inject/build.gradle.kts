@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     alias(libs.plugins.android.library)
 }
@@ -5,8 +7,8 @@ plugins {
 android {
     namespace = "es.chiteroman.inject"
     compileSdk = 36
-    ndkVersion = "28.2.13676358"
-    buildToolsVersion = "36.0.0"
+    ndkVersion = "29.0.14206865"
+    buildToolsVersion = "36.1.0"
 
     buildFeatures {
         prefab = true
@@ -34,7 +36,7 @@ android {
                 arguments(
                     "-DCMAKE_BUILD_TYPE=Release",
                     "-DANDROID_STL=none",
-                    "-DCMAKE_BUILD_PARALLEL_LEVEL=${Runtime.getRuntime().availableProcessors()}",
+                    "-DCMAKE_JOB_POOLS=compile=${Runtime.getRuntime().availableProcessors()}",
                     "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
                     "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
                 )

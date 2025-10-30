@@ -8,21 +8,27 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
     - name: Check out
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         submodules: 'recursive'
         fetch-depth: 1
         ref: inject_s
 
     - name: Set up JDK
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
         java-version: 21
+
+    - name: Build WebUI
+      run: |
+        cd webui
+        npm ci
+        npm run build
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -30,9 +36,14 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
+    - name: Setup variables
+      run: |
+        VERSION=$(jq -r '.version' update.json)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
     - name: Upload CI module zip as artifact zip
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
-        name: PlayIntegrityFix_${{ github.run_number }}-inject-s
+        name: PlayIntegrityFix_${{ env.VERSION }}-inject-s_${{ github.run_number }}
         path: 'module/*'
         compression-level: 9
